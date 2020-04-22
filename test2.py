@@ -5,29 +5,54 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 import joblib
-
+import os
 import pandas as pd
 from azureml.core import Run, Datastore, Model, Workspace
 from azureml.core.authentication import ServicePrincipalAuthentication
-
+import argparse
+from dotenv import load_dotenv
+load_dotenv()
 #ws = Run.get_context()
 
-ws = Workspace.get("ws-ml", ServicePrincipalAuthentication(
-    tenant_id="",
-    service_principal_id="",
-    service_principal_password=""
+parser = argparse.ArgumentParser()
+parser.add_argument("--ws",
+                    dest="ws",
+                    )
+
+parser.add_argument("--rg",
+                    dest="rg",
+                    )
+
+parser.add_argument("--datastore",
+                    dest="datastore",
+                    )
+
+parser.add_argument("--dataset",
+                    dest="dataset",
+                    )
+
+parser.add_argument("--modelname",
+                    dest="modelname",
+                    )
+args = parser.parse_args()
+
+
+ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
+    tenant_id=os.getenv('tenant_id'),
+    service_principal_id=os.getenv('service_principal_id'),
+    service_principal_password=os.getenv('service_principal_password')
 ), 
-    subscription_id="",
-    resource_group=""
+    subscription_id=os.getenv('subscription_id'),
+    resource_group=args.rg
 )
 
-ds = Datastore.get(ws, "myundatastore")
+ds = Datastore.get(ws, args.datastore)
 
-ds.download("assets", "iris.csv", overwrite=False)
+ds.download("assets", args.dataset, overwrite=False)
 
 
 # Load dataset
-url = "assets/iris.csv"
+url = "assets/"+args.dataset
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = read_csv(url, names=names)
 
@@ -48,4 +73,4 @@ print(classification_report(Y_validation, predictions))
 
 joblib.dump(model, "trained_model1.pkl")
 
-Model.register(ws, "trained_model1.pkl", "new_model")
+Model.register(ws, "trained_model1.pkl", argparse.modelname)

@@ -4,46 +4,86 @@ import os
 import urllib
 import shutil
 import azureml
-
+from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.core import Experiment
 from azureml.core import Workspace, Run
 from azureml.core.compute import ComputeTarget, AmlCompute
 from azureml.core.compute_target import ComputeTargetException
 from azureml.train.sklearn import SKLearn
+import argparse
+from dotenv import load_dotenv
+load_dotenv()
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--ws",
+                    dest="ws",
+                    )
 
-ws = Workspace.from_config()
+parser.add_argument("--rg",
+                    dest="rg",
+                    )
+
+parser.add_argument("--experiment",
+                    dest="experiment",
+                    )
+
+parser.add_argument("--trcompute",
+                    dest="trcompute",
+                    )
+
+parser.add_argument("--trainingscript",
+                    dest="trainingscript",
+                    )
+parser.add_argument("--datastore",
+                    dest="datastore",
+                    )
+
+parser.add_argument("--dataset",
+                    dest="dataset",
+                    )
+
+parser.add_argument("--modelname",
+                    dest="modelname",
+                    )
+args = parser.parse_args()
+
+ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
+    tenant_id=os.getenv('tenant_id'),
+    service_principal_id=os.getenv('service_principal_id'),
+    service_principal_password=os.getenv('service_principal_password')
+), 
+    subscription_id=os.getenv('subscription_id'),
+    resource_group=args.rg
+)
 
 project_folder = '.'
 os.makedirs(project_folder, exist_ok=True)
 
 
-exp = Experiment(workspace=ws, name='sklearn-iris')
+exp = Experiment(workspace=ws, name=args.experiment)
 
 
-cluster_name = "mytrcompute44"
+cluster_name = args.trcompute
 
 try:
     compute_target = ComputeTarget(workspace=ws, name=cluster_name)
     print('Found existing compute target')
 except ComputeTargetException:
     print('Creating a new compute target...')
-    #compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2', 
-                                                           #max_nodes=4)
 
-    #compute_target = ComputeTarget.create(ws, cluster_name, compute_config)
+# Parameters to be passed in training scrript
 
-    #compute_target.wait_for_completion(show_output=True, min_node_count=None, timeout_in_minutes=20)
-
-# script_params = {
-#     '--kernel': 'linear',
-#     '--penalty': 1.0,}
-
+script_params = {
+     '--ws': args.ws,
+     '--rg': args.rg,
+     '--datastore': args.datastore,
+     '--dataset': args.dataset,
+     '--modelname': args.modelname,}
 
 estimator = SKLearn(source_directory=project_folder, 
-#script_params=script_params,
+script_params=script_params,
 compute_target=compute_target,
-entry_script='test2.py',
+entry_script=args.trainingscript,
 conda_dependencies_file="env.yml"
 )
 print("submitting experiment")

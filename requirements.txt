@@ -1,3 +1,4 @@
 sklearn
 azureml-sdk
 inference-schema
+python-dotenv

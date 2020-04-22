@@ -5,9 +5,32 @@ from azureml.core.image.image import ImageConfig
 from typing import List
 from azureml.core.image import ContainerImage
 from azureml.core.webservice import AksWebservice
+import argparse
+from dotenv import load_dotenv
+load_dotenv()
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--ws",
+                    dest="ws",
+                    )
 
-#ws = Run.get_context()
+parser.add_argument("--rg",
+                    dest="rg",
+                    )
+
+parser.add_argument("--modelname",
+                    dest="modelname",
+                    )
+
+parser.add_argument("--aksname",
+                    dest="aksname",
+                    )
+
+parser.add_argument("--servicename",
+                    dest="servicename",
+                    )
+args = parser.parse_args()
+
 #Create Service Function
 def create_aks_service(
         name: str,
@@ -15,17 +38,8 @@ def create_aks_service(
         models: List[Model],
         target: ComputeTarget,
         ws: Workspace) -> Webservice:
-    """
-    Creates a new web service
-    :param name: name of the service
-    :param image_config: image configuration
-    :param models: ML model object
-    :param target: ComputeTarget
-    :param ws:
-    :return: Webservice
-    """
+
     print("Loading AKS deploy config from deployconfig_aks.yml")
-    #conf_params = yaml.safe_load(open("./config/deployconfig_aks.yml"))
     deploy_conf = AksWebservice.deploy_configuration()
     print(models)
     service = Webservice.deploy_from_model(workspace=ws,
@@ -40,16 +54,9 @@ def create_aks_service(
 
 #Create image config Function used in creation of service
 def create_image_config(script_name, conda_env):
-    # environment = os.getenv("ENVIRONMENT", "DEV")
-    # if os.path.exists("azureml-models"):
-    #     print("WARNING! Deleting azureml-models folder")
-    #     rmtree("azureml-models")
-    # if os.path.exists("assets"):
-    #     print("WARNING! Deleting assets folder")
-    #     rmtree("assets")
+
     image_config = ContainerImage.image_configuration(execution_script=script_name,
                                                       runtime="python",
-                                                      #docker_file="config/" + environment.lower() + ".dockerfile",
                                                       dependencies=["./"],
                                                       conda_file=conda_env)
     return image_config
@@ -66,23 +73,23 @@ def update_service(service, models, image_config, ws):
     return service
 
 # Authentication via service principle
-ws = Workspace.get("ws-ml", ServicePrincipalAuthentication(
-    tenant_id=",
-    service_principal_id="",
-    service_principal_password=""
+ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
+    tenant_id=os.getenv('tenant_id'),
+    service_principal_id=os.getenv('service_principal_id'),
+    service_principal_password=os.getenv('service_principal_password')
 ), 
-    subscription_id="",
-    resource_group=""
+    subscription_id=os.getenv('subscription_id'),
+    resource_group=args.rg
 )
 
 
 
-model  = Model(ws, "new_model")
-deployment_target=ComputeTarget(ws, "akscluster")
+model  = Model(ws, args.modelname)
+deployment_target=ComputeTarget(ws, args.aksname)
 
 img = create_image_config("score.py","scoringenv.yml")
 
-servicename = "myservice2"
+servicename = args.servicename
 try:
     service = Webservice(ws, servicename)
 except WebserviceException as e:
