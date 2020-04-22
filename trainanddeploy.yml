@@ -1,13 +1,16 @@
 
-# variables:
-#   ml-ws-connection: 'Test-ML-Conn' # Workspace Service Connection name
-#   ml-ws: 'ws-ml' # AML Workspace name
-#   ml-rg: 'RG-ML' # AML resource Group name
-#   ml-ct: 'mytrcompute44' # AML Compute cluster name
-#   ml-path: '/' # Model directory path in repo
-#   ml-exp: 'test-devops-exp' # Experiment name
-#   ml-model-name: 'test-devops-model' # Model name
-#   ml-aks-name: 'akscluster' # AKS cluster name
+variables:
+   workspace-name: 'ws-ml' # Workspace Service Connection name
+   resourcegroup-name: 'RG-ML' # AML Resource Group name
+   experiment-name: 'Newexperiment' # AML Experiment name
+   trainingcompute-name: 'mytrcompute44' # AML Compute cluster name
+   trainingscript-name: 'test2.py' # Model training script name in repo
+   datastore-name: 'myundatastore' # Datastore name
+   dataset-name: 'iris.csv' # Dataset name residing in storageaccount
+   model-name: 'mynewmodel' # Model name
+   aks-name: 'akscluster' # AKS cluster name
+   aksservice-name: 'welcome' # AKS service name
+
 
 trigger:
 - master
