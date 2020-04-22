@@ -45,11 +45,22 @@ steps:
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/trainingexperiment.py'
-
+    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --experiment=$(experiment-name) --trcompute=$(trainingcompute-name) --trainingscript=$(trainingscript-name) --datastore=$(datastore-name) --dataset=$(dataset-name) --modelname=$(model-name)
+  env:
+    service_principal_id: $(service_principal_id)
+    service_principal_password: $(service_principal_password)
+    subscription_id: $(subscription_id)
+    tenant_id: $(tenant_id)
 - task: PythonScript@0
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/deployment.py'
+    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --modelname=$(model-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
+  env:
+    service_principal_id: $(service_principal_id)
+    service_principal_password: $(service_principal_password)
+    subscription_id: $(subscription_id)
+    tenant_id: $(tenant_id)
 
 
 
