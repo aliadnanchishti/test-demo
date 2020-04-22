@@ -73,4 +73,4 @@ print(classification_report(Y_validation, predictions))
 
 joblib.dump(model, "trained_model1.pkl")
 
-Model.register(ws, "trained_model1.pkl", argparse.modelname)
+Model.register(ws, "trained_model1.pkl", args.modelname)
