@@ -1,0 +1,3 @@
+sklearn
+azureml-sdk
+inference-schema
