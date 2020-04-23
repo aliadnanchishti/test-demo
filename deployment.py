@@ -93,9 +93,9 @@ img = create_image_config("score.py","scoringenv.yml")
 servicename = args.servicename
 try:
     service = Webservice(ws, servicename)
-except WebserviceException as e:
-    print(e)
-    service = None
+#except WebserviceException as e:
+#    print(e)
+#    service = None
 if service:
     print("Updating existing service with new image...")
     try:
