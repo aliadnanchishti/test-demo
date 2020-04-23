@@ -1,4 +1,5 @@
 
+import os
 from azureml.core import Model, Workspace, ComputeTarget, Webservice
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.core.image.image import ImageConfig
