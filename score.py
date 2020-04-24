@@ -12,28 +12,13 @@ from inference_schema.parameter_types.numpy_parameter_type import NumpyParameter
 
 def init():
     global model
-
-    path = 'azureml-models/'
-    files = []
-
-    for r, d, f in os.walk(path):
-        for file in f:
-            files.append(os.path.join(r, file))
-
-    for f in files:
-        loaded = joblib.load(f)
-        if hasattr(loaded, "fit") and model is None:
-            model = loaded
-            print("Model found", model)
-            continue
-        if hasattr(loaded, "tolist") and encoded_columns is None:
-            encoded_columns = loaded
-            print("Model_ec found: ", len(encoded_columns))
-            continue
-
-    #model_path = Model.get_model_path('new_model')
-
-    #model = joblib.load(model_path)
+    # AZUREML_MODEL_DIR is an environment variable created during deployment. Join this path with the filename of the model file.
+    # It holds the path to the directory that contains the deployed model (./azureml-models/$MODEL_NAME/$VERSION).
+    # If there are multiple models, this value is the path to the directory containing all deployed models (./azureml-models).
+    model_path = Model.get_model_path('new_model')
+    #model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'trained_model.pkl')
+    # Deserialize the model file back into a sklearn model
+    model = joblib.load(model_path)
 
 
 input_sample = np.array([[10, 9, 8, 7]])

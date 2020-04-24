@@ -42,9 +42,7 @@ parser.add_argument("--dataset",
                     dest="dataset",
                     )
 
-parser.add_argument("--modelname",
-                    dest="modelname",
-                    )
+
 args = parser.parse_args()
 
 ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
@@ -77,8 +75,7 @@ script_params = {
      '--ws': args.ws,
      '--rg': args.rg,
      '--datastore': args.datastore,
-     '--dataset': args.dataset,
-     '--modelname': args.modelname,}
+     '--dataset': args.dataset,}
 
 estimator = SKLearn(source_directory=project_folder, 
 script_params=script_params,

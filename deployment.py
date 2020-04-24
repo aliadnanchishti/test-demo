@@ -19,10 +19,6 @@ parser.add_argument("--rg",
                     dest="rg",
                     )
 
-parser.add_argument("--modelname",
-                    dest="modelname",
-                    )
-
 parser.add_argument("--aksname",
                     dest="aksname",
                     )
@@ -85,7 +81,7 @@ ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
 
 
 
-model  = Model(ws, args.modelname)
+model  = Model(ws, "new_model")
 deployment_target=ComputeTarget(ws, args.aksname)
 
 img = create_image_config("score.py","scoringenv.yml")

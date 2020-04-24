@@ -31,9 +31,6 @@ parser.add_argument("--dataset",
                     dest="dataset",
                     )
 
-parser.add_argument("--modelname",
-                    dest="modelname",
-                    )
 args = parser.parse_args()
 
 
@@ -73,4 +70,4 @@ print(classification_report(Y_validation, predictions))
 
 joblib.dump(model, "trained_model1.pkl")
 
-Model.register(ws, "trained_model1.pkl", args.modelname)
+Model.register(ws, "trained_model1.pkl", "new_model")
