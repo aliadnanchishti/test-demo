@@ -101,4 +101,4 @@ if service:
     except Exception as e:
         print("Unable to link existing service.\n {}".format(e))
 else:
-create_aks_service(servicename,img,[model],deployment_target,ws)
+    create_aks_service(servicename,img,[model],deployment_target,ws)
