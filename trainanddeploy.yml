@@ -28,86 +28,21 @@ steps:
     architecture: 'x64'
 
 - script: python -m pip install --upgrade pip setuptools wheel
-  displayName: 'Install tools'
+  displayName: 'Install Python Tools'
 - script: python -m pip install -r requirements.txt
-  displayName: 'Install requirements'
+  displayName: 'Install Dependencies'
 
-# - task: AzureCLI@2
-#   displayName: 'Attach folder to workspace'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml folder attach -w $(ml-ws) -g $(ml-rg)'
 
 - task: PythonScript@0
+  displayName: 'Training Model'
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/trainingexperiment.py'
     arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --experiment=$(experiment-name) --trcompute=$(trainingcompute-name) --trainingscript=$(trainingscript-name) --datastore=$(datastore-name) --dataset=$(dataset-name)
 
 - task: PythonScript@0
+  displayName: 'Deploying Model'
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/deployment.py'
     arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
-
-
-# - task: AzureCLI@2
-#   displayName: 'Train model'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml run submit-script -c config/train --ct $(ml-ct) -e $(ml-exp) -t run.json train.py'
-
-# # Add potential approval step before registration of model
-
-# - task: AzureCLI@2
-#   displayName: 'Register model'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml model register -n $(ml-model-name) -f run.json --asset-path outputs/ridge_0.95.pkl -t model.json'
-
-# - task: AzureCLI@2
-#   displayName: 'Deploy model to ACI for QA'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml model deploy -n diabetes-qa-aci -f model.json --ic config/inference-config.yml --dc config/deployment-config-aci.yml --overwrite'
-
-# # Add potential automated tests
-
-# - task: AzureCLI@2
-#   displayName: 'Create AKS cluster'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml computetarget create aks --name $(ml-aks-name) --cluster-purpose DevTest'
-
-# - task: AzureCLI@2
-#   displayName: 'Deploy model to AKS for Production'
-#   inputs:
-#     azureSubscription: $(ml-ws-connection)
-#     workingDirectory: $(ml-path)
-#     scriptLocation: inlineScript
-#     scriptType: 'bash'
-#     inlineScript: 'az ml model deploy --name diabetes-prod-aks --ct $(ml-aks-name) -f model.json --ic config/inference-config.yml --dc config/deployment-config-aks.yml  --overwrite'
-
-#- task: AzureCLI@2
-#  displayName: 'Delete deployed service'
-#  inputs:
-#    azureSubscription: $(ml-ws-connection)
-#    workingDirectory: $(ml-path)
-#    scriptLocation: inlineScript
-#    scriptType: 'bash'
-#    inlineScript: 'az ml service delete -n diabetes-qa-aci'
