@@ -87,18 +87,18 @@ deployment_target=ComputeTarget(ws, args.aksname)
 img = create_image_config("score.py","scoringenv.yml")
 
 servicename = args.servicename
-#try:
-#    service = Webservice(ws, servicename)
-#except WebserviceException as e:
-#    print(e)
-#    service = None
-#if service:
-#    print("Updating existing service with new image...")
-#    try:
+try:
+    service = Webservice(ws, servicename)
+except Exception as e:
+    print(e)
+    service = None
+if service:
+    print("Updating existing service with new image...")
+    try:
         # create new image
-#        service = update_service(
-#            service, [model], img, ws)
-#    except Exception as e:
-#        print("Unable to link existing service.\n {}".format(e))
-#else:
+        service = update_service(
+            service, [model], img, ws)
+    except Exception as e:
+        print("Unable to link existing service.\n {}".format(e))
+else:
 create_aks_service(servicename,img,[model],deployment_target,ws)

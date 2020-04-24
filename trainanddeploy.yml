@@ -7,7 +7,7 @@ variables:
    trainingscript-name: 'test2.py' # Model training script name in repo
    datastore-name: 'myundatastore' # Datastore name
    dataset-name: 'iris.csv' # Dataset name residing in storageaccount
-   model-name: 'mynewmodel' # Model name
+   #model-name: 'mynewmodel' # Model name
    aks-name: 'akscluster' # AKS cluster name
    aksservice-name: 'welcome' # AKS service name
 
@@ -45,13 +45,13 @@ steps:
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/trainingexperiment.py'
-    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --experiment=$(experiment-name) --trcompute=$(trainingcompute-name) --trainingscript=$(trainingscript-name) --datastore=$(datastore-name) --dataset=$(dataset-name) --modelname=$(model-name)
+    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --experiment=$(experiment-name) --trcompute=$(trainingcompute-name) --trainingscript=$(trainingscript-name) --datastore=$(datastore-name) --dataset=$(dataset-name)
 
 - task: PythonScript@0
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/deployment.py'
-    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --modelname=$(model-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
+    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
 
 
 # - task: AzureCLI@2
