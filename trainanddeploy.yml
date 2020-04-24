@@ -51,7 +51,7 @@ steps:
   inputs:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/deployment.py'
-    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --modelname=$(model-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
+    arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
 
 
 # - task: AzureCLI@2
