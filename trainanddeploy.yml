@@ -46,3 +46,4 @@ steps:
     scriptSource: 'filePath'
     scriptPath: '$(System.DefaultWorkingDirectory)/deployment.py'
     arguments: --ws=$(workspace-name) --rg=$(resourcegroup-name) --aksname=$(aks-name) --servicename=$(aksservice-name)
+#yaml ended
