@@ -54,6 +54,7 @@ ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
     resource_group=args.rg
 )
 
+print("Printing Workspace")
 print(ws)
 
 project_folder = '.'
@@ -62,9 +63,12 @@ os.makedirs(project_folder, exist_ok=True)
 
 exp = Experiment(workspace=ws, name=args.experiment)
 
+print("Printing experiment")
 print(exp)
 
 cluster_name = args.trcompute
+print("Printing computer name")
+print(cluster_name)
 
 try:
     compute_target = ComputeTarget(workspace=ws, name=cluster_name)
@@ -83,7 +87,7 @@ script_params = {
 estimator = SKLearn(source_directory=project_folder, 
 script_params=script_params,
 compute_target=compute_target,
-entry_script=args.trainingscript,
+entry_script='test2.py',
 conda_dependencies_file="env.yml"
 )
 print("submitting experiment")
