@@ -54,12 +54,15 @@ ws = Workspace.get(args.ws, ServicePrincipalAuthentication(
     resource_group=args.rg
 )
 
+print(ws)
+
 project_folder = '.'
 os.makedirs(project_folder, exist_ok=True)
 
 
 exp = Experiment(workspace=ws, name=args.experiment)
 
+print(exp)
 
 cluster_name = args.trcompute
 
