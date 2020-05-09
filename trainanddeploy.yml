@@ -2,7 +2,7 @@
 variables:
    workspace-name: 'ws-ml' # Workspace Service Connection name
    resourcegroup-name: 'RG-ML' # AML Resource Group name
-   experiment-name: 'DevOpsExperiment1' # AML Experiment name
+   experiment-name: 'DevOpsExperiment' # AML Experiment name
    trainingcompute-name: 'mytrcompute44' # AML Compute cluster name
    trainingscript-name: 'test2.py' # Model training script name in repo
    datastore-name: 'myundatastore' # Datastore name
